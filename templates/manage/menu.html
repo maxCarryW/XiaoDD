@@ -1,0 +1,29 @@
+<style>
+    a.admin-menu {
+        background-color: #eee;
+    }
+
+    a.admin-menu:hover, a.admin-menu:focus {
+        color: #555;
+        text-decoration: none;
+        background-color: #eee;
+    }
+
+    a.menu-child {
+        padding-left: 35px;
+    }
+</style>
+<div class="panel-group hide-sm col-md-2" style="position: fixed;padding-left: 0px;font-size: 16px;">
+    {% for item in menu %}
+        <a href="#" class="list-group-item admin-menu" data-toggle="collapse" data-target="#settings{{ forloop.counter }}">
+            <span class="{{ item.icon }}"></span>
+            <strong>{{ item.title }}</strong>
+            <span class="badge">{{ item.child|length }}</span>
+        </a>
+        <div id="settings{{ forloop.counter }}" class="collapse {{ item.collapse }}">
+            {% for coll in item.child %}
+                <a href="{{ coll.url }}" class="list-group-item menu-child"><span class="{{ coll.icon }}"></span> {{ coll.title }}</a>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>

@@ -1,0 +1,15 @@
+{% extends 'manage/base.html' %}
+{% block content %}
+    {% include 'manage/head.html' %}
+    <div class="container clearfix row" style="margin-top: 65px;margin-bottom: 55px; width: 100%;">
+        <div class="col-sm-1 col-md-2">
+            {% include 'manage/menu.html' %}
+        </div>
+        <div class="col-sm-11 col-md-10">
+{#            {% include 'manage/breadcrumb.html' %}#}
+
+            {% block views %}{% endblock %}
+        </div>
+    </div>
+    {% include 'manage/foot.html' %}
+{% endblock %}

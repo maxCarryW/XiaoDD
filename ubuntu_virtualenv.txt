@@ -1,0 +1,12 @@
+1.安装Python
+
+2.安装virtualenv
+pip install virtualenv
+
+3.进入指定虚拟环境存放路径
+virtualenv env_name
+
+4.source env_name/bin/activate
+
+5.退出
+deactivate

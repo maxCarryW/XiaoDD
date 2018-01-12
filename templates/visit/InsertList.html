@@ -1,0 +1,100 @@
+{% extends 'visit/base_2.html' %}
+{% block title %}残疾人信息{% endblock %}
+{% block list %}
+    <h1 class="demos-title">残疾人信息</h1><br/>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label" for=""> 残疾人姓名</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="text" placeholder="请输入残疾人姓名" id="disabled_name">
+            </div>
+        </div>
+        <div class="weui-cell ">
+            <div class="weui-cell__hd">
+                <label class="weui-label" for="">残疾人手机号</label>
+            </div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="tel" placeholder="请输入残疾人手机号" id="disabled_phone">
+            </div>
+        </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label for="" class="weui-label">残疾证号</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="number" placeholder="请输入残疾证号" id="disabled_number">
+                </div>
+            </div>
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+            <div class="weui-cell__hd">
+                <label for="" class="weui-label">地区</label>
+            </div>
+            <div class="weui-cell__bd">
+                <select class="weui-select" name="select2" id="area_list">
+                    {% for item in  area %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="weui-cells weui-cells_form">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <div class="weui-uploader">
+                        <div class="weui-uploader__hd">
+                            <p class="weui-uploader__title">图片上传</p>
+                            <div class="weui-uploader__info">0/2</div>
+                        </div>
+                        <div class="weui-uploader__bd">
+                            <div class="weui-uploader__input-box">
+                                <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*"
+                                       multiple="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd">
+                <label class="weui-label" style="height: 70px;">备注</label>
+            </div>
+            <div class="weui-cell__bd">
+                <textarea class="weui-textarea" placeholder="" rows="3" id="disabled_description"></textarea>
+            </div>
+        </div>
+    <button id="submit" class="weui-btn weui-btn_primary" style=" width: 80%; ">提 &nbsp;&nbsp;&nbsp; 交</button>
+    </div> <br/>
+
+{% endblock %}
+{% block custom_js %}
+    <script>
+        $(function () {
+            $("#login").click(function () {
+                var param = {};
+                param.name =$("#disabled_name").val();
+                param.phone = $("#disabled_phone").val();
+                param.password = $("#disabled_number").val();
+                $.ajax({
+                    cache: false,
+                    type: "POST",
+                    url: "{% url 'contact:login' %}",
+                    data: param,
+                    async: true,
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                    },
+                    success: function (json) {
+                        if (json.code != 1) {
+                            alert(json.message)
+                        }
+                        else {
+                            window.location = "{% url 'admin:index' %}"
+                        }
+                    },
+                    error: function (err) {
+                        alert("请求失败，请重试！");
+                    }
+                });
+            })
+        })
+    </script>
+{% endblock %}

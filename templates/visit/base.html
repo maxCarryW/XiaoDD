@@ -1,0 +1,20 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联络员-{% block title %}首页{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/demos.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/weui.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-weui.css' %}">
+    {% block custom_css %}{% endblock %}
+</head>
+<body>
+{% block content %}
+{% endblock %}
+<script src="{% static 'js/jquery-3.2.1.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/jquery-weui.js' %}" type="text/javascript"></script>
+{% block custom_js %}{% endblock %}
+</body>
+</html>

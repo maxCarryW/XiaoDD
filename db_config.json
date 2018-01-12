@@ -1,0 +1,10 @@
+{
+  "default": {
+    "ENGINE": "django.db.backends.mysql",
+    "NAME": "bysj",
+    "USER": "root",
+    "PASSWORD": "123456",
+    "HOST": "120.79.144.49",
+    "PORT": "3306"
+  }
+}

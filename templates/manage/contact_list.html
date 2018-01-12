@@ -1,0 +1,156 @@
+{% extends 'manage/content.html' %}
+{% block views %}
+    {{ content.test }}
+    <div>
+        <nav id="nav" class="navbar navbar-default " role="navigation" style="margin:0px 0px 0px 0px;">
+            <div>
+                <form class="navbar-form navbar-right" role="search">
+                    <div class="form-group">
+                        <input id="phone" type="text" class="form-control" placeholder="手机号" onkeypress="if (event.keyCode == 13) {$('#table').bootstrapTable('refresh'); }"/>
+                        <div class="input-group">
+                            <input id="fl_val" type="text" class="form-control" readonly="readonly" ">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    类型
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="#" onclick="$('#fl_val').val('');">&nbsp;</a></li>
+                                    <li><a href="#" onclick="$('#fl_val').val('中国移动');">中国移动</a></li>
+                                    <li><a href="#" onclick="$('#fl_val').val('中国电信');">中国电信</a></li>
+                                    <li><a href="#" onclick="$('#fl_val').val('中国联通');">中国联通</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    &nbsp;&nbsp; &nbsp;&nbsp;
+                    <button id="CX" type="button" class="btn btn-default" onclick="search()">查询</button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button type="button" class="btn btn-info " data-toggle="modal" data-target="#MaterialAdd">新 建</button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </form>
+            </div>
+        </nav>
+        <table id="ArbetTable"></table>
+    </div>
+    </div>
+{% endblock %}
+{% block custom_js %}
+    <script>
+        $(function () {
+            //1.初始化Table
+            var oTable = new TableInit();
+            oTable.Init();
+        });
+        function getHeight() {
+            return $(window).height() - $('nav').outerHeight(true) - 100;
+        }
+        var TableInit = function () {
+            var oTableInit = new Object();
+            //初始化Table
+            oTableInit.Init = function () {
+                $('#ArbetTable').bootstrapTable({
+                    url: '{% url "pagination" %}',         //请求后台的URL（*）
+                    method: 'get',                      //请求方式（*）
+                    //toolbar: '#toolbar',                //工具按钮用哪个容器
+                    striped: true,                      //是否显示行间隔色
+                    cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                    pagination: true,                   //是否显示分页（*）
+                    sortable: false,                     //是否启用排序
+                    sortOrder: "asc",                   //排序方式
+                    queryParams: oTableInit.queryParams,//传递参数（*）
+                    sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                    pageNumber: 1,                       //初始化加载第一页，默认第一页
+                    pageSize: 20,                       //每页的记录行数（*）
+                    pageList: [20, 50, 100, 200],        //可供选择的每页的行数（*）
+                    //search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                    contentType: "application/x-www-form-urlencoded",
+                    strictSearch: true,
+                    //showColumns: true,                  //是否显示所有的列
+                    //showRefresh: true,                  //是否显示刷新按钮
+                    minimumCountColumns: 2,             //最少允许的列数
+                    clickToSelect: true,                //是否启用点击选中行
+                    height: getHeight(),//高度会影响表头的响应式
+                    uniqueId: "no",                     //每一行的唯一标识，一般为主键列
+                    //showToggle: true,                    //是否显示详细视图和列表视图的切换按钮
+                    cardView: false,                    //是否显示详细视图
+                    detailView: false,                   //是否显示父子表
+                    columns: [
+                        {
+                            field: 'pk',
+                            valign: 'middle',
+                            title: 'ID'
+                        }, {
+                            field: 'fields.phone',
+                            valign: 'middle',
+                            title: '名字'
+                        },
+                        {
+                            field: 'operate',
+                            title: '操作',
+                            align: 'center',
+                            events: operateEvents,
+                            formatter: operateFormatter
+                        },
+                    ]
+                });
+                setTimeout(function () {
+                    $('#ArbetTable').bootstrapTable('resetView');
+                }, 5000);
+            };
+
+
+            //得到查询的参数
+            oTableInit.queryParams = function (params) {
+                var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                    limit: params.limit,   //页面大小
+                    page: params.offset,
+                    app: "contact",
+                    model: "contact",
+                    and_phone__contains: "185",
+                    or_checkState: 1,
+                };
+                return temp;
+            };
+            return oTableInit;
+        };
+        function operateFormatter(value, row, index) {//赋予的参数
+            return [
+                '<a class="pass" href="javascript:void(0)" title="通过">',
+                '<i class="glyphicon glyphicon-ok-circle"></i>',
+                '</a>&nbsp;&nbsp;&nbsp;',
+                '<a class="fail" href="javascript:void(0)" title="不通过" style="color:red">',
+                '<i class="glyphicon glyphicon-remove-circle"></i>',
+                '</a>'
+            ].join('');
+        }
+        window.operateEvents = {
+            'click .pass': function (e, value, row, index) {
+                if (confirm("确定 " + row.phone + " 通过审核？")) {
+                    var param = {};
+                    param.pk = row.pk;
+                    param.checkState = 1;
+                    param.checkDescription = "";
+                    $.ajax({
+                        cache: false,
+                        type: "POST",
+                        url: "{% url 'contact:check' %}",
+                        data: param,
+                        async: true,
+                        beforeSend: function (xhr, settings) {
+                            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                        },
+                        success: function (json) {
+                            alert(json.message)
+                        },
+                        error: function (err) {
+                            alert("请求失败，请重试！");
+                        }
+                    });
+                }
+            }
+        };
+    </script>
+
+{% endblock %}

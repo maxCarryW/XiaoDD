@@ -1,0 +1,69 @@
+{% extends 'visit/base.html' %}
+{% block title %}登录{% endblock %}
+{% block content %}
+    <br/><br/><br/>
+    <h1 class="demos-title">登 录</h1><br/>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">用户名</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="number" pattern="[0-11]*" placeholder="请输入用户名" style="width: 70%"
+                       id="contact_phone">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">密码</label></div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="password" placeholder="密码" style="width: 70%"
+                       id="contact_password">
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd">
+                <a class="weui-form-preview__btn weui-form-preview__btn_primary" href="{% url 'contact:register' %}"
+                   style="font-size: 12px ;right: 0px ;">立即注册</a></div>
+            <div class="weui-cell__bd"></div>
+            <div class="weui-cell__ft">
+                <a class="weui-form-preview__btn weui-form-preview__btn_default" href="{% url 'contact:forget' %}"
+                   style="font-size: 12px; left: 0px">忘记密码？</a>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <br/><br/>
+            <a class="weui-btn weui-btn_primary" style="width: 60%" id="login">登录</a>
+        </div>
+    </div>
+
+{% endblock %}
+{% block custom_js %}
+    <script>
+        $(function () {
+            $("#login").click(function () {
+                var param = {};
+                param.phone = $("#contact_phone").val();
+                param.password = $("#contact_password").val();
+                $.ajax({
+                    cache: false,
+                    type: "POST",
+                    url: "{% url 'contact:login' %}",
+                    data: param,
+                    async: true,
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                    },
+                    success: function (json) {
+                        if (json.code != 1) {
+                            alert(json.message)
+                        }
+                        else {
+                            window.location = "{% url 'admin:index' %}"
+                        }
+                    },
+                    error: function (err) {
+                        alert("请求失败，请重试！");
+                    }
+                });
+            })
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联络员-{% block title %}首页{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/demos.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/weui.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-weui.css' %}">
+    {% block custom_css %}{% endblock %}
+</head>
+<body>
+
+<div class="weui-tab">
+    <div class="weui-tab__bd">
+        {% block list %}
+        {% endblock %}
+    </div>
+    <div class="weui-tabbar">
+        <a  href="{% url 'visit:index' %}" class="weui-tabbar__item weui-bar__item--on">
+            <div class="weui-tabbar__icon">
+                <img src="{% static 'images/bussiness-card.png' %}" alt="">
+            </div>
+            <p class="weui-tabbar__label">入户</p>
+        </a>
+        <a href="{% url 'visit:VisitList' %}" class="weui-tabbar__item">
+            <div class="weui-tabbar__icon">
+                <img src="{% static 'images/nav-list.png' %}" alt="" style="width: 80%;height: 80%">
+            </div>
+            <p class="weui-tabbar__label">入户列表</p>
+        </a>
+        <a href="{% url 'contact:myself' %}" class="weui-tabbar__item">
+            <div class="weui-tabbar__icon">
+                <!--<i class="fas fa-user"></i>-->
+                <img src="{% static 'images/account.png' %}" alt="" style="width: 90%;height: 90%">
+            </div>
+            <p class="weui-tabbar__label">我</p>
+        </a>
+
+    </div>
+</div>
+
+<script src="{% static 'js/jquery-3.2.1.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/jquery-weui.js' %}" type="text/javascript"></script>
+{% block custom_js %}{% endblock %}
+</body>
+</html>

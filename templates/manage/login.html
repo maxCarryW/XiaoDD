@@ -1,0 +1,68 @@
+{% extends 'manage/base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <div class="col-md-4 column">
+    </div>
+    <div class="col-md-4 column">
+        <div class="panel panel-default" style="margin-top: 100px;box-shadow: 0 0 40px rgba(0,0,0,.3);max-width: 400px;">
+            <div class="panel-heading">
+                <h2 class="form-signin-heading text-center">{{ site.title }}</h2>
+            </div>
+            <div class="panel-body">
+                <form class="bs-example bs-example-form">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                        <input type="text" id="username" class="form-control" placeholder="用户名">
+                    </div>
+                    <br>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                        <input type="password" id="password" class="form-control" placeholder="密码">
+                    </div>
+                    <br>
+                    <br>
+                    <button type="button" class="btn btn-primary btn-lg btn-block" id="login"><strong>登 录</strong></button>
+                    <br>
+                    <button type="button" class="btn btn-link">忘记密码？</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 column">
+    </div>
+{% endblock %}
+{% block custom_js %}
+    <script src="{% static 'js/ajax.js' %}" type="text/javascript"></script>
+    <script>
+        $(function () {
+            $("#login").click(function () {
+                var param = {};
+                param.username = $("#username").val();
+                param.password = $("#password").val();
+                $.ajax({
+                    cache: false,
+                    type: "POST",
+                    url: "{% url 'admin:login' %}",
+                    data: param,
+                    async: true,
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                    },
+                    success: function (json) {
+                        if (json.code != 1) {
+                            alert(json.message)
+                        }
+                        else {
+                            window.location = "{% url 'admin:index' %}"
+                        }
+                    },
+                    error: function (err) {
+                        alert("请求失败，请重试！");
+                    }
+                });
+            })
+        })
+
+    </script>
+
+{% endblock %}
